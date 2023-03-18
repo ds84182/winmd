@@ -16,7 +16,7 @@ void main() {
 
   // } // end of class Windows.Win32.UI.WindowsAndMessaging.HANDEDNESS
   test('Windows.Win32.UI.WindowsAndMessaging.HANDEDNESS enum', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final hand =
         scope.findTypeDef('Windows.Win32.UI.WindowsAndMessaging.HANDEDNESS')!;
 

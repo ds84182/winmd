@@ -16,7 +16,7 @@ void main() {
   //
   // } // end of class Windows.Win32.UI.WindowsAndMessaging.ACCEL
   test('Windows.Win32.UI.WindowsAndMessaging.ACCEL', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final accel =
         scope.findTypeDef('Windows.Win32.UI.WindowsAndMessaging.ACCEL')!;
 

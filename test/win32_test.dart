@@ -8,7 +8,7 @@ import 'package:winmd/winmd.dart';
 
 void main() {
   test('Scope modules contain expected DLLs', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     check(scope.moduleRefs.map((module) => module.name))
       ..contains('KERNEL32.dll')
       ..contains('USER32.dll')
@@ -17,26 +17,26 @@ void main() {
   });
 
   test('Scope modules contain expected user strings', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     check(scope.userStrings.length).equals(0);
   });
 
   test('Can successfully load a typedef from the Win32 metadata', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typedef = scope.findTypeDef('Windows.Win32.Graphics.Gdi.Apis');
     check(typedef).isNotNull();
     check(typedef!.methods).isNotEmpty();
   });
 
   test('Typedef is named correctly', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typedef = scope.findTypeDef('Windows.Win32.UI.Shell.Apis')!;
     check(typedef.name).equals('Windows.Win32.UI.Shell.Apis');
     check(typedef.toString()).equals('Windows.Win32.UI.Shell.Apis');
   });
 
   test('Typedef equality is successful', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typedef1 = scope.findTypeDef('Windows.Win32.UI.Shell.Apis')!;
     final typedef2 = scope.findTypeDef('Windows.Win32.UI.Shell.Apis')!;
     final typedef3 = scope.findTypeDef('Windows.Win32.Graphics.Gdi.Apis')!;
@@ -46,14 +46,14 @@ void main() {
   });
 
   test('Searching for a non-existent typedef returns null', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     const fakeTypeDef = 'Windows.Flutter.Apis'; // for now :)
     final typedef = scope.findTypeDef(fakeTypeDef);
     check(typedef).isNull();
   });
 
   test('Can find a known API within the given scope', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typedef = scope.findTypeDef('Windows.Win32.Graphics.Gdi.Apis')!;
 
     final api = typedef.findMethod('AddFontResourceW');
@@ -62,7 +62,7 @@ void main() {
   });
 
   test('Searching for a non-existent API call returns null', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typedef = scope.findTypeDef('Windows.Win32.Graphics.Gdi.Apis')!;
 
     final api = typedef.findMethod('AddFlutterWidget');
@@ -70,7 +70,7 @@ void main() {
   });
 
   test('isResolvedToken gives correct result for a real token', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typedef = scope.findTypeDef('Windows.Win32.Graphics.Gdi.Apis')!;
 
     final api = typedef.findMethod('AddFontResourceW')!;
@@ -79,7 +79,7 @@ void main() {
   });
 
   test('isResolvedToken gives correct result for a pseudo-token', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typedef = scope.findTypeDef('Windows.Win32.Graphics.Gdi.Apis')!;
     final api = typedef.findMethod('AddFontResourceW')!;
     final returnType = api.returnType;
@@ -88,7 +88,7 @@ void main() {
   });
 
   test('No attributes for a pseudo-token', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typedef = scope.findTypeDef('Windows.Win32.Graphics.Gdi.Apis')!;
     final api = typedef.findMethod('AddFontResourceW')!;
     final returnType = api.returnType;
@@ -97,7 +97,7 @@ void main() {
   });
 
   test('Functions can correctly return an int type', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typedef = scope.findTypeDef('Windows.Win32.Graphics.Gdi.Apis')!;
     final api = typedef.findMethod('AddFontResourceW')!;
     final returnType = api.returnType;
@@ -107,7 +107,7 @@ void main() {
   });
 
   test('LPWSTR parameters are handled correctly', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typedef = scope.findTypeDef('Windows.Win32.Graphics.Gdi.Apis')!;
     final api = typedef.findMethod('AddFontResourceW')!;
 
@@ -123,7 +123,7 @@ void main() {
   });
 
   test('Signature blob is correct', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typedef = scope.findTypeDef('Windows.Win32.Graphics.Gdi.Apis')!;
     final api = typedef.findMethod('AddFontResourceW')!;
     check(api.signatureBlob.sublist(0, 4))
@@ -131,7 +131,7 @@ void main() {
   });
 
   test('Unicode string params are correctly marked', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typedef = scope.findTypeDef('Windows.Win32.Graphics.Gdi.Apis')!;
     final api = typedef.findMethod('AddFontResourceW')!;
 
@@ -143,7 +143,7 @@ void main() {
   });
 
   test('ANSI string params are correctly marked', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typedef = scope.findTypeDef('Windows.Win32.Graphics.Gdi.Apis')!;
     final api = typedef.findMethod('AddFontResourceA')!;
 
@@ -155,7 +155,7 @@ void main() {
   });
 
   test('Returned structs like LPRECT have correct param width', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typedef = scope.findTypeDef('Windows.Win32.Graphics.Gdi.Apis')!;
     final api = typedef.findMethod('UnionRect')!;
 
@@ -174,7 +174,7 @@ void main() {
   });
 
   test('Structs like RECT have the correct type args', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typedef = scope.findTypeDef('Windows.Win32.Graphics.Gdi.Apis')!;
     final api = typedef.findMethod('UnionRect')!;
 
@@ -187,7 +187,7 @@ void main() {
   });
 
   test('DWORD typedefs like COLORREF have the correct param type', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typedef = scope.findTypeDef('Windows.Win32.Graphics.Gdi.Apis')!;
     final api = typedef.findMethod('SetBkColor')!;
     final colorParam = api.parameters.last;
@@ -202,7 +202,7 @@ void main() {
   });
 
   test('DWORD typedefs like COLORREF have the correct return type', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typedef = scope.findTypeDef('Windows.Win32.Graphics.Gdi.Apis')!;
     final api = typedef.findMethod('SetBkColor')!;
     final returnType = api.returnType;
@@ -216,7 +216,7 @@ void main() {
   });
 
   test('HANDLE-style parameters have the correct type', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typedef =
         scope.findTypeDef('Windows.Win32.UI.Input.KeyboardAndMouse.Apis')!;
     final api = typedef.findMethod('UnregisterHotKey')!;
@@ -229,7 +229,7 @@ void main() {
   });
 
   test('LPHANDLE-style parameters have the correct type', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typedef =
         scope.findTypeDef('Windows.Win32.UI.WindowsAndMessaging.Apis')!;
     final api = typedef.findMethod('CascadeWindows')!;
@@ -247,7 +247,7 @@ void main() {
   });
 
   test('Character parameters have the correct type', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typedef = scope.findTypeDef('Windows.Win32.System.Console.Apis')!;
     final api = typedef.findMethod('FillConsoleOutputCharacterW')!;
     final param = api.parameters[1];
@@ -257,7 +257,7 @@ void main() {
   });
 
   test('UnregisterPowerSettingNotification has the correct parameter type', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typedef = scope.findTypeDef('Windows.Win32.System.Power.Apis')!;
     final api = typedef.findMethod('UnregisterPowerSettingNotification')!;
     final param = api.parameters.first;
@@ -267,7 +267,7 @@ void main() {
   });
 
   test('GetActiveObject REFCLSID has the correct parameter type', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typedef = scope.findTypeDef('Windows.Win32.System.Ole.Apis')!;
     final api = typedef.findMethod('GetActiveObject')!;
     final param = api.parameters.first;
@@ -280,7 +280,7 @@ void main() {
   });
 
   test('APIs with empty parameters have an accurate return type', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typedef =
         scope.findTypeDef('Windows.Win32.System.DataExchange.Apis')!;
     final api = typedef.findMethod('CountClipboardFormats')!;
@@ -290,7 +290,7 @@ void main() {
   });
 
   test('Double pointer is interpreted correctly', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typedef =
         scope.findTypeDef('Windows.Win32.Security.Credentials.Apis')!;
     final api = typedef.findMethod('CredReadW')!;
@@ -304,7 +304,7 @@ void main() {
   });
 
   test('HRESULT return values are generated correctly', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typedef =
         scope.findTypeDef('Windows.Win32.System.SystemInformation.Apis')!;
     final api = typedef.findMethod('GetIntegratedDisplaySize')!;
@@ -316,7 +316,7 @@ void main() {
   });
 
   test('IUnknown parameters are generated correctly', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typedef = scope.findTypeDef('Windows.Win32.System.Com.Apis')!;
     final api = typedef.findMethod('CoSetProxyBlanket')!;
     final param = api.parameters.first;
@@ -326,7 +326,7 @@ void main() {
   });
 
   test('Callback functions are generated correctly', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typedef = scope.findTypeDef('Windows.Win32.Graphics.Gdi.Apis')!;
     final api = typedef.findMethod('EnumFontFamiliesExW')!;
     final param = api.parameters[2]; // FONTENUMPROCW
@@ -338,7 +338,7 @@ void main() {
   });
 
   test('Callback functions are generated correctly 2', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typedef =
         scope.findTypeDef('Windows.Win32.System.Diagnostics.Debug.Apis')!;
     final api = typedef.findMethod('SymEnumSymbolsW')!;
@@ -352,7 +352,7 @@ void main() {
   });
 
   test('Constants are accessible from metadata', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typedef =
         scope.findTypeDef('Windows.Win32.UI.WindowsAndMessaging.Apis')!;
     final constants = typedef.fields;
@@ -360,7 +360,7 @@ void main() {
   });
 
   test('A given literal constant can be read', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typedef =
         scope.findTypeDef('Windows.Win32.UI.WindowsAndMessaging.Apis')!;
     final wmPaint =
@@ -369,7 +369,7 @@ void main() {
   });
 
   test('Naked structs are generated correctly', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typedef = scope.findTypeDef('Windows.Win32.System.Threading.Apis')!;
     final api = typedef.findMethod('InitializeProcThreadAttributeList')!;
     final param = api.parameters.first;
@@ -381,14 +381,14 @@ void main() {
   });
 
   test('Enumerations present in Win32 metadata', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final enums = scope.enums;
 
     check(enums.length).isGreaterThan(100);
   });
 
   test('Enumerations contain correct entries', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final ropCode =
         scope.enums.firstWhere((en) => en.name.endsWith('ROP_CODE'));
 
@@ -396,7 +396,7 @@ void main() {
   });
 
   test('A specific enumeration contains expected constants', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final ropCode =
         scope.enums.firstWhere((en) => en.name.endsWith('ROP_CODE'));
 
@@ -404,7 +404,7 @@ void main() {
   });
 
   test('Enumerations are typed appropriately in functions', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typedef = scope.findTypeDef('Windows.Win32.Graphics.Gdi.Apis')!;
     final api = typedef.findMethod('CreateDIBitmap')!;
     final param = api.parameters.last;
@@ -414,7 +414,7 @@ void main() {
   });
 
   test('Pointers to enumerations are typed appropriately in functions', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typedef = scope.findTypeDef('Windows.Win32.System.Pipes.Apis')!;
     final api = typedef.findMethod('GetNamedPipeInfo')!;
     final param = api.parameters[1];
@@ -427,7 +427,7 @@ void main() {
   });
 
   test('Get properties are appropriately marked', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typedef = scope
         .findTypeDef('Windows.Win32.Networking.NetworkListManager.INetwork')!;
     final api = typedef.findMethod('get_IsConnectedToInternet');
@@ -436,21 +436,21 @@ void main() {
   });
 
   test('Delegates are appropriately marked', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final delegate =
         scope.findTypeDef('Windows.Win32.Graphics.Gdi.MFENUMPROC')!;
     check(delegate.isDelegate).isTrue();
   });
 
   test('Non-delegates are appropriately marked', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final notADelegate =
         scope.findTypeDef('Windows.Win32.System.SystemServices.Apis')!;
     check(notADelegate.isDelegate).isFalse();
   });
 
   test('Delegates are appropriately exposed', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final delegate =
         scope.findTypeDef('Windows.Win32.Graphics.Gdi.MFENUMPROC')!;
 
@@ -461,19 +461,19 @@ void main() {
   });
 
   test('Scope contains an expected quantity of delegates', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     check(scope.delegates.length).isGreaterThan(1000);
   });
 
   test('Packing instructions are available', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final packedStruct =
         scope.findTypeDef('Windows.Win32.Graphics.Gdi.BITMAPFILEHEADER')!;
     check(packedStruct.classLayout.packingAlignment).equals(2);
     check(packedStruct.classLayout.minimumSize).equals(0);
   });
   test('Packing instructions are available 2', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final packedStruct =
         scope.findTypeDef('Windows.Win32.Devices.Bluetooth.BTH_QUERY_SERVICE')!;
     check(packedStruct.classLayout.packingAlignment).equals(1);
@@ -481,7 +481,7 @@ void main() {
   });
 
   test('Packing instructions are unavailable for an unpacked class', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final packedStruct = scope
         .findTypeDef('Windows.Win32.Devices.Bluetooth.BTH_RADIO_IN_RANGE')!;
     check(packedStruct.classLayout.packingAlignment).isNull();
@@ -489,7 +489,7 @@ void main() {
   });
 
   test('No crash when calling GetClassLayout on an enum', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final packedStruct =
         scope.findTypeDef('Windows.Win32.UI.Shell.KNOWN_FOLDER_FLAG')!;
     check(packedStruct.classLayout.packingAlignment).isNull();
@@ -497,7 +497,7 @@ void main() {
   });
 
   test('Attributes for an interface', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final interface =
         scope.findTypeDef('Windows.Win32.System.WinRT.IActivationFactory')!;
     check(interface.customAttributes.length).equals(2);

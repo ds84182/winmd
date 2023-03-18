@@ -6,7 +6,7 @@ import 'package:winmd/winmd.dart';
 
 void main() {
   test('Test Win32 field properties', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typeDef = scope.findTypeDef('Windows.Win32.Media.Audio.Apis');
 
     check(typeDef).isNotNull();

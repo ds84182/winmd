@@ -34,7 +34,7 @@ void main() {
   // } // end of class Windows.Win32.UI.WindowsAndMessaging.WNDPROC
 
   test('Windows.Win32.UI.WindowsAndMessaging.WNDPROC', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final wndProc =
         scope.findTypeDef('Windows.Win32.UI.WindowsAndMessaging.WNDPROC')!;
 

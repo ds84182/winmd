@@ -7,17 +7,17 @@ import 'package:winmd/winmd.dart';
 
 void main() {
   test('0 is not a valid token', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     check(scope.reader.IsValidToken(0)).equals(FALSE);
   });
   test('0x00000001 is a valid token', () {
     // This should be the module identifier in all normal circumstances
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     check(scope.reader.IsValidToken(0x00000001)).equals(TRUE);
   });
 
   test('ValueType', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final accel =
         scope.findTypeDef('Windows.Win32.UI.WindowsAndMessaging.ACCEL')!;
     check(accel.isResolvedToken).isTrue();

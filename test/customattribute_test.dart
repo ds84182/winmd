@@ -56,7 +56,7 @@ void main() {
   });
 
   test('Custom attribute in Win32 is correctly specified', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final shexInfo =
         scope.findTypeDef('Windows.Win32.UI.Shell.SHELLEXECUTEINFOW');
 
@@ -82,7 +82,7 @@ void main() {
   });
 
   test('Multiple custom attributes with same name', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final hrsrc = scope.findTypeDef('Windows.Win32.Foundation.HRSRC')!;
 
     check(hrsrc.customAttributes.length).equals(3);
@@ -102,7 +102,7 @@ void main() {
   });
 
   test('Find a matching attribute', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final hwnd = scope.findTypeDef('Windows.Win32.Foundation.HWND')!;
 
     check(hwnd.existsAttribute('Windows.Win32.Interop.NativeTypedefAttribute'))
@@ -110,7 +110,7 @@ void main() {
   });
 
   test('Missing attributes are not found', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final hwnd = scope.findTypeDef('Windows.Win32.Foundation.HWND')!;
 
     check(hwnd.existsAttribute('Windows.SparklesTheCatAttribute')).isFalse();
@@ -131,7 +131,7 @@ void main() {
   });
 
   test('Minimum Windows version', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final commApis =
         scope.findTypeDef('Windows.Win32.Devices.Communication.Apis')!;
     final getCommPorts = commApis.findMethod('GetCommPorts')!;

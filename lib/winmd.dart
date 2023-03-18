@@ -35,7 +35,7 @@
 /// scope:
 ///
 /// ```dart
-///   final scope = MetadataStore.getWin32Scope();
+///   final scope = await MetadataStore.getWin32Scope();
 /// ```
 ///
 /// From here, you can interrogate the `scope` object for its children; in

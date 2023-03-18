@@ -26,7 +26,7 @@ void main() {
     check(winRTScope.userStrings.length).equals(1);
     check(winRTScope.userStrings.first).equals(' ');
 
-    final win32Scope = MetadataStore.getWin32Scope();
+    final win32Scope = await MetadataStore.getWin32Scope();
     check(win32Scope.userStrings.length).equals(0);
   });
 

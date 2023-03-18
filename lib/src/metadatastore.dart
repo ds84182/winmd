@@ -7,7 +7,6 @@
 //
 // ignore_for_file: deprecated_member_use
 
-import 'dart:cli';
 import 'dart:ffi';
 import 'dart:io';
 
@@ -29,14 +28,10 @@ import 'utils/exception.dart';
 /// Use this to obtain a reference of a scope without creating unnecessary
 /// copies or cycles.
 class MetadataStore {
-  static Map<String, Scope> cache = {};
-  static late IMetaDataDispenser dispenser;
-  static bool isInitialized = false;
+  Map<String, Scope> scopeCache = {};
+  late final IMetaDataDispenser dispenser;
 
-  /// Initialize the [MetadataStore] object.
-  ///
-  /// This is done automatically by any method that uses it.
-  static void _initialize() {
+  MetadataStore() {
     // This must have the same object lifetime as MetadataStore itself.
     final dispenserObject = calloc<COMObject>();
     final clsidCorMetaDataDispenser =
@@ -52,28 +47,10 @@ class MetadataStore {
       }
 
       dispenser = IMetaDataDispenser(dispenserObject);
-      isInitialized = true;
     } finally {
       free(clsidCorMetaDataDispenser);
       free(iidIMetaDataDispenser);
     }
-
-    // Load Win32 scopes
-    waitFor(initWin32Scopes(), timeout: const Duration(seconds: 60));
-  }
-
-  static Future<void> initWin32Scopes() async {
-    const win32pkg = 'Microsoft.Windows.SDK.Win32Metadata';
-    final latestVersion =
-        await NuGet.getLatestVersion(win32pkg, includePreviewVersions: true);
-    final win32PackagePath = await NuGet.unpackPackage(win32pkg, latestVersion);
-
-    final win32Metadata = File('$win32PackagePath\\Windows.Win32.winmd');
-    cache['Windows.Win32.winmd'] = getScopeForFile(win32Metadata);
-
-    final win32InteropDll =
-        File('$win32PackagePath\\Windows.Win32.Interop.dll');
-    cache['Windows.Win32.Interop.dll'] = getScopeForFile(win32InteropDll);
   }
 
   /// Return the scope that contains the Win32 metadata.
@@ -87,28 +64,27 @@ class MetadataStore {
   /// time for generating types. It also reduces the risk of breaking changes
   /// being out of sync with the winmd library, since the two can be more
   /// tightly bound together.
-  static Scope getWin32Scope() {
-    if (!isInitialized) _initialize();
-    return cache['Windows.Win32.winmd']!;
-  }
+  Future<void> loadWin32Metadata() async {
+    const win32pkg = 'Microsoft.Windows.SDK.Win32Metadata';
+    final latestVersion =
+        await NuGet.getLatestVersion(win32pkg, includePreviewVersions: true);
+    final win32PackagePath = await NuGet.unpackPackage(win32pkg, latestVersion);
 
-  /// Return the scope that contains the Win32 interop metadata.
-  ///
-  /// This is a satellite file that supports the Win32 metadata. It primarily
-  /// contains attributes that are used by the main file.
-  static Scope getWin32InteropScope() {
-    if (!isInitialized) _initialize();
-    return cache['Windows.Win32.Interop.dll']!;
+    final win32Metadata = File('$win32PackagePath\\Windows.Win32.winmd');
+    scopeCache['Windows.Win32.winmd'] = loadScopeFromFile(win32Metadata);
+
+    final win32InteropDll =
+        File('$win32PackagePath\\Windows.Win32.Interop.dll');
+    scopeCache['Windows.Win32.Interop.dll'] =
+        loadScopeFromFile(win32InteropDll);
   }
 
   /// Takes a metadata file path and returns the matching scope.
-  static Scope getScopeForFile(File fileScope) {
-    if (!isInitialized) _initialize();
-
+  Scope loadScopeFromFile(File fileScope) {
     final filename = fileScope.uri.pathSegments.last;
 
-    if (cache.containsKey(filename)) {
-      return cache[filename]!;
+    if (scopeCache.containsKey(filename)) {
+      return scopeCache[filename]!;
     } else {
       final szFile = fileScope.path.toNativeUtf16();
       final pReader = calloc<COMObject>();
@@ -125,7 +101,7 @@ class MetadataStore {
             iidIMetaDataAssemblyImport, pAssemblyImport.cast());
         final scope = Scope(IMetaDataImport2(pReader),
             IMetaDataAssemblyImport(pAssemblyImport));
-        cache[filename] = scope;
+        scopeCache[filename] = scope;
         return scope;
       } finally {
         free(szFile);
@@ -137,7 +113,7 @@ class MetadataStore {
 
   /// Takes a typename (e.g. `Windows.Globalization.Calendar`) and returns the
   /// metadata file that contains the type.
-  static File winmdFileContainingType(String typeName) {
+  File winmdFileContainingType(String typeName) {
     if (typeName.isEmpty) throw WinmdException('Type cannot be empty.');
 
     File path;
@@ -181,7 +157,7 @@ class MetadataStore {
 
   /// Takes a typename (e.g. `Windows.Globalization.Calendar`) and returns the
   /// metadata scope that contains the type.
-  static Scope getScopeForType(String typeName) {
+  Scope getScopeForType(String typeName) {
     if (typeName.isEmpty) throw WinmdException('Type cannot be empty.');
 
     if (typeName.startsWith('Windows.Win32')) {
@@ -192,9 +168,9 @@ class MetadataStore {
       // already loaded. This won't be a problem, so long as the original Win32
       // metadata scope was loaded with getScopeForFile.
       final cacheEntry =
-          cache.keys.firstWhere((entry) => entry == 'Windows.Win32.winmd');
+          scopeCache.keys.firstWhere((entry) => entry == 'Windows.Win32.winmd');
 
-      return cache[cacheEntry]!;
+      return scopeCache[cacheEntry]!;
     } else {
       // Assume it's a Windows Runtime type
       final hstrTypeName = convertToHString(typeName);
@@ -211,7 +187,7 @@ class MetadataStore {
             hstrMetaDataFilePath, spMetaDataImport, typeDef);
         if (SUCCEEDED(hr)) {
           final filePath = convertFromHString(hstrMetaDataFilePath.value);
-          return getScopeForFile(File(filePath));
+          return loadScopeFromFile(File(filePath));
         } else {
           final errorCode = hr.toHexString(32);
           if (errorCode == RO_E_METADATA_INVALID_TYPE_FORMAT.toHexString(32)) {
@@ -238,9 +214,8 @@ class MetadataStore {
   }
 
   /// Find a matching typedef, if one exists, for a Windows Runtime type.
-  static TypeDef? getMetadataForType(String typeName) {
+  TypeDef? getMetadataForType(String typeName) {
     if (typeName.isEmpty) throw WinmdException('Type cannot be empty.');
-    if (!isInitialized) _initialize();
 
     final scope = getScopeForType(typeName);
     return scope.findTypeDef(typeName);
@@ -251,8 +226,8 @@ class MetadataStore {
   /// The readers and dispensers should be automatically torn down with the end
   /// of the process, but it's polite to do this in an orderly manner,
   /// particularly if the calling app outlives the cache lifetime.
-  static void close() {}
+  void close() {}
 
   /// Print information about the cache for debugging purposes.
-  static String get cacheInfo => '[${MetadataStore.cache.keys.join(', ')}]';
+  String get cacheInfo => '[${MetadataStore.scopeCache.keys.join(', ')}]';
 }

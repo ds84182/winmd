@@ -32,7 +32,7 @@ void listEnums([String type = 'Windows.Globalization']) {
 
   final file =
       MetadataStore.winmdFileContainingType('Windows.Globalization.DayOfWeek');
-  final mdScope = MetadataStore.getScopeForFile(File(file.path));
+  final mdScope = MetadataStore.loadScopeFromFile(File(file.path));
   final enums = mdScope.enums;
 
   for (final enumEntry in enums) {

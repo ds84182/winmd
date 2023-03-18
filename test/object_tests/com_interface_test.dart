@@ -24,7 +24,7 @@ void main() {
 // } // end of class Windows.Win32.UI.Shell.IFileOperation2
 
   test('Windows.Win32.UI.Shell.IFileOperation2', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final ifop2 = scope.findTypeDef('Windows.Win32.UI.Shell.IFileOperation2')!;
 
     check(ifop2.isInterface).isTrue();

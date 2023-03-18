@@ -6,7 +6,7 @@ import 'package:winmd/winmd.dart';
 
 void main() {
   test('Can find a COM interface in winmd', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final iNetwork = scope.typeDefs
         .firstWhere((typedef) => typedef.name.endsWith('INetwork'));
 
@@ -14,7 +14,7 @@ void main() {
   });
 
   test('Can find a COM interface in winmd by name', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final iNetwork = scope
         .findTypeDef('Windows.Win32.Networking.NetworkListManager.INetwork')!;
 
@@ -23,7 +23,7 @@ void main() {
 
   group('INetwork tests', () {
     test('Can search for a COM interface in winmd', () {
-      final scope = MetadataStore.getWin32Scope();
+      final scope = await MetadataStore.getWin32Scope();
       final iNetwork = scope
           .findTypeDef('Windows.Win32.Networking.NetworkListManager.INetwork')!;
       check(iNetwork.isInterface).isTrue();
@@ -31,28 +31,28 @@ void main() {
     });
 
     test('INetwork inherits from IDispatch', () {
-      final scope = MetadataStore.getWin32Scope();
+      final scope = await MetadataStore.getWin32Scope();
       final iNetwork = scope
           .findTypeDef('Windows.Win32.Networking.NetworkListManager.INetwork')!;
       check(iNetwork.interfaces.first.name).endsWith('IDispatch');
     });
 
     test('Interface has expected number of methods', () {
-      final scope = MetadataStore.getWin32Scope();
+      final scope = await MetadataStore.getWin32Scope();
       final iNetwork = scope
           .findTypeDef('Windows.Win32.Networking.NetworkListManager.INetwork')!;
       check(iNetwork.methods.length).equals(13);
     });
 
     test('Interface has the right IID', () {
-      final scope = MetadataStore.getWin32Scope();
+      final scope = await MetadataStore.getWin32Scope();
       final iNetwork = scope
           .findTypeDef('Windows.Win32.Networking.NetworkListManager.INetwork')!;
       check(iNetwork.guid).equals('{dcb00002-570f-4a9b-8d69-199fdba5723b}');
     });
 
     test('COM methods are named correctly', () {
-      final scope = MetadataStore.getWin32Scope();
+      final scope = await MetadataStore.getWin32Scope();
       final iNetwork = scope
           .findTypeDef('Windows.Win32.Networking.NetworkListManager.INetwork')!;
       final getName = iNetwork.methods.first;
@@ -61,7 +61,7 @@ void main() {
     });
 
     test('COM methods have right number of parameters', () {
-      final scope = MetadataStore.getWin32Scope();
+      final scope = await MetadataStore.getWin32Scope();
       final iNetwork = scope
           .findTypeDef('Windows.Win32.Networking.NetworkListManager.INetwork')!;
       final getName = iNetwork.methods.first;
@@ -70,7 +70,7 @@ void main() {
     });
 
     test('COM methods return HRESULTs', () {
-      final scope = MetadataStore.getWin32Scope();
+      final scope = await MetadataStore.getWin32Scope();
       final iNetwork = scope
           .findTypeDef('Windows.Win32.Networking.NetworkListManager.INetwork')!;
       final getName = iNetwork.methods.first;
@@ -79,7 +79,7 @@ void main() {
     });
 
     test('COM method string pointers are represented accurately', () {
-      final scope = MetadataStore.getWin32Scope();
+      final scope = await MetadataStore.getWin32Scope();
       final iNetwork = scope
           .findTypeDef('Windows.Win32.Networking.NetworkListManager.INetwork')!;
       final getName = iNetwork.methods.first;
@@ -94,7 +94,7 @@ void main() {
     });
 
     test('COM method strings are represented accurately', () {
-      final scope = MetadataStore.getWin32Scope();
+      final scope = await MetadataStore.getWin32Scope();
       final iNetwork = scope
           .findTypeDef('Windows.Win32.Networking.NetworkListManager.INetwork')!;
       final setName = iNetwork.methods[1];
@@ -107,7 +107,7 @@ void main() {
     });
 
     test('COM method parameters are represented accurately', () {
-      final scope = MetadataStore.getWin32Scope();
+      final scope = await MetadataStore.getWin32Scope();
       final iShellItem =
           scope.findTypeDef('Windows.Win32.UI.Shell.IShellItem')!;
       final getAttributes = iShellItem.findMethod('GetAttributes')!;
@@ -129,7 +129,7 @@ void main() {
     });
 
     test('GUIDs are represented accurately', () {
-      final scope = MetadataStore.getWin32Scope();
+      final scope = await MetadataStore.getWin32Scope();
       final iNetwork = scope
           .findTypeDef('Windows.Win32.Networking.NetworkListManager.INetwork')!;
       final getNetworkId = iNetwork.findMethod('GetNetworkId')!;
@@ -142,7 +142,7 @@ void main() {
     });
 
     test('Properties are true for isGetProperty', () {
-      final scope = MetadataStore.getWin32Scope();
+      final scope = await MetadataStore.getWin32Scope();
       final iNetwork = scope
           .findTypeDef('Windows.Win32.Networking.NetworkListManager.INetwork')!;
       final isConnected = iNetwork.findMethod('get_IsConnectedToInternet')!;
@@ -150,7 +150,7 @@ void main() {
     });
 
     test('Properties are represented accurately', () {
-      final scope = MetadataStore.getWin32Scope();
+      final scope = await MetadataStore.getWin32Scope();
       final iNetwork = scope
           .findTypeDef('Windows.Win32.Networking.NetworkListManager.INetwork')!;
       final isConnected = iNetwork.findMethod('get_IsConnectedToInternet')!;
@@ -167,7 +167,7 @@ void main() {
   });
 
   test('COM methods of form get_*** are not interpreted as properties', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final iksTopologyInfo =
         scope.findTypeDef('Windows.Win32.Media.DirectShow.IKsTopologyInfo')!;
     final getNodeName = iksTopologyInfo.findMethod('get_NodeName')!;
@@ -176,7 +176,7 @@ void main() {
   });
 
   test('Multiple layers of interface inheritance are correct', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final iFactory2 = scope
         .findTypeDef('Windows.Win32.Graphics.DirectWrite.IDWriteFactory2')!;
     check(iFactory2.interfaces.length).equals(1);
@@ -194,7 +194,7 @@ void main() {
   test(
       'IApplicationActivationManager.ActivateApplication '
       'recognizes ACTIVATEOPTIONS as an enum', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final iApplicationActivationManager = scope
         .findTypeDef('Windows.Win32.UI.Shell.IApplicationActivationManager')!;
     final activateApplication =
@@ -212,7 +212,7 @@ void main() {
   });
 
   test('Optional COM parameters', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final interface =
         scope.findTypeDef('Windows.Win32.Graphics.Direct3D12.ID3D12Device8')!;
     final method = interface.methods.first;

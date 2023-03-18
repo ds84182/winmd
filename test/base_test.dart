@@ -17,7 +17,7 @@ void main() {
   });
 
   test('Can successfully find a module', () {
-    final file = MetadataStore.getWin32Scope();
+    final file = await MetadataStore.getWin32Scope();
     check(file.moduleToken).equals(0x00000001);
   });
 
@@ -41,7 +41,7 @@ void main() {
   });
 
   test('Unknown token TypeDef 1', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     const invalidTokenType = 0xFF123456;
 
     check(() => TypeDef.fromToken(scope, invalidTokenType))
@@ -51,7 +51,7 @@ void main() {
   });
 
   test('Unknown token TypeDef 2', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     const nonTypeDefToken = 0x1A123456;
 
     check(() => TypeDef.fromToken(scope, nonTypeDefToken))
@@ -61,7 +61,7 @@ void main() {
   });
 
   test('Unknown token TypeDef 3', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     const missingTypeDefToken = 0x02FEDCBA;
 
     check(() => TypeDef.fromToken(scope, missingTypeDefToken))
@@ -72,7 +72,7 @@ void main() {
   });
 
   test('Unknown token ClassLayout', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     const invalidClassLayoutToken = 0x02FEDCBA;
 
     check(() => ClassLayout(scope, invalidClassLayoutToken))
@@ -83,7 +83,7 @@ void main() {
   });
 
   test('Unknown token CustomAttribute', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     const invalidCustomAttributeToken = 0x0CFEDCBA;
 
     check(() => CustomAttribute.fromToken(scope, invalidCustomAttributeToken))
@@ -94,7 +94,7 @@ void main() {
   });
 
   test('Unknown token Event', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     const invalidEventToken = 0x14FEDCBA;
 
     check(() => Event.fromToken(scope, invalidEventToken))
@@ -105,7 +105,7 @@ void main() {
   });
 
   test('Unknown token Field', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     const invalidFieldToken = 0x04FEDCBA;
 
     check(() => Field.fromToken(scope, invalidFieldToken))
@@ -116,7 +116,7 @@ void main() {
   });
 
   test('Unknown token GenericParam', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     const invalidGenericParamToken = 0x2AFEDCBA;
 
     check(() => GenericParam.fromToken(scope, invalidGenericParamToken))
@@ -127,7 +127,7 @@ void main() {
   });
 
   test('Unknown token GenericParamConstraint', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     const invalidGenericParamConstraintToken = 0x2CFEDCBA;
 
     check(() => GenericParamConstraint.fromToken(
@@ -138,7 +138,7 @@ void main() {
   });
 
   test('Unknown token MemberRef', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     const invalidMemberRefToken = 0x0AFEDCBA;
 
     check(() => MemberRef.fromToken(scope, invalidMemberRefToken))
@@ -149,7 +149,7 @@ void main() {
   });
 
   test('Unknown token Method', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     const invalidMethodToken = 0x06FEDCBA;
 
     check(() => Method.fromToken(scope, invalidMethodToken))
@@ -160,7 +160,7 @@ void main() {
   });
 
   test('Unknown token ModuleRef', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     const invalidModuleRefToken = 0x1AFEDCBA;
 
     check(() => ModuleRef.fromToken(scope, invalidModuleRefToken))
@@ -171,7 +171,7 @@ void main() {
   });
 
   test('Unknown token Parameter', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     const invalidParameterToken = 0x08FEDCBA;
 
     check(() => Parameter.fromToken(scope, invalidParameterToken))
@@ -182,7 +182,7 @@ void main() {
   });
 
   test('Unknown token PinvokeMap', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     const invalidPinvokeMapToken = 0x06FEDCBA;
 
     check(() => PinvokeMap.fromToken(scope, invalidPinvokeMapToken))
@@ -193,7 +193,7 @@ void main() {
   });
 
   test('Unknown token Property', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     const invalidPropertyToken = 0x17FEDCBA;
 
     check(() => Property.fromToken(scope, invalidPropertyToken))

@@ -81,7 +81,7 @@ void main() {
     final win32PackagePath = await NuGet.unpackPackage(win32pkg, latestVersion);
     final win32Metadata = File('$win32PackagePath\\Windows.Win32.winmd');
     check(win32Metadata.existsSync()).isTrue();
-    final scope = MetadataStore.getScopeForFile(win32Metadata);
+    final scope = MetadataStore.loadScopeFromFile(win32Metadata);
     final typeDef =
         scope.findTypeDef('Windows.Win32.UI.WindowsAndMessaging.Apis');
     check(typeDef).isNotNull();

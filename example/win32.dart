@@ -7,10 +7,10 @@
 
 import 'package:winmd/winmd.dart';
 
-void main() {
+void main() async {
   // Load WinMD metadata for Win32, as produced by the following utility:
   // https://github.com/microsoft/win32metadata
-  final scope = MetadataStore.getWin32Scope();
+  final scope = await MetadataStore.getWin32Scope();
 
   // Find a namesapce
   final namespace =

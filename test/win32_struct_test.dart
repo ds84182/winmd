@@ -6,13 +6,13 @@ import 'package:winmd/winmd.dart';
 
 void main() {
   test('Struct has expected number of fields', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final struct = scope.findTypeDef('Windows.Win32.Graphics.Gdi.XFORM')!;
     check(struct.fields.length).equals(6);
   });
 
   test('Struct primitive field has expected name and type', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final struct = scope.findTypeDef('Windows.Win32.Graphics.Gdi.XFORM')!;
     check(struct.fields.first.name).equals('eM11');
     check(struct.fields.first.typeIdentifier.baseType)
@@ -20,7 +20,7 @@ void main() {
   });
 
   test('Struct valuetype field has expected name and type', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final struct = scope
         .findTypeDef('Windows.Win32.System.Threading.PROCESS_INFORMATION')!;
     check(struct.fields.first.name).equals('hProcess');
@@ -30,7 +30,7 @@ void main() {
   });
 
   test('Struct array field has expected name and type', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final struct = scope.findTypeDef('Windows.Win32.Graphics.Gdi.BITMAPINFO')!;
     check(struct.fields.last.name).equals('bmiColors');
     check(struct.fields.last.typeIdentifier.baseType)
@@ -39,7 +39,7 @@ void main() {
   });
 
   test('Struct array field has expected name and type 2', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final struct =
         scope.findTypeDef('Windows.Win32.Graphics.Gdi.DESIGNVECTOR')!;
     check(struct.fields.last.name).equals('dvValues');
@@ -53,7 +53,7 @@ void main() {
   });
 
   test('Struct PHYSICAL_MONITOR contains an array of chars', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final struct =
         scope.findTypeDef('Windows.Win32.Devices.Display.PHYSICAL_MONITOR')!;
     final szPhysicalMonitorDescription = struct.fields[1];
@@ -65,7 +65,7 @@ void main() {
   });
 
   test('Small struct array fields have the correct dimensions', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final struct =
         scope.findTypeDef('Windows.Win32.Storage.FileSystem.WIN32_FIND_DATAW')!;
     final cAlternateFileName = struct.fields[9];
@@ -74,7 +74,7 @@ void main() {
   });
 
   test('Large struct array fields have the correct dimensions', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final struct =
         scope.findTypeDef('Windows.Win32.Storage.FileSystem.WIN32_FIND_DATAW')!;
     final cFileName = struct.fields[8];
@@ -83,13 +83,13 @@ void main() {
   });
 
   test('Non-nested types are identified correctly', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final struct = scope.findTypeDef('Windows.Win32.UI.Controls.CCINFOW')!;
     check(struct.enclosingClass).isNull();
   });
 
   test('Nested types are identified correctly', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final struct =
         scope.findTypeDef('Windows.Win32.UI.Input.KeyboardAndMouse.INPUT')!;
 
@@ -101,7 +101,7 @@ void main() {
   });
 
   test('Union structs are identified correctly', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final struct =
         scope.findTypeDef('Windows.Win32.UI.Input.KeyboardAndMouse.INPUT')!;
 
@@ -114,7 +114,7 @@ void main() {
   });
 
   test('Union structs have correct parent', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final struct =
         scope.findTypeDef('Windows.Win32.UI.Input.KeyboardAndMouse.INPUT')!;
 
@@ -127,7 +127,7 @@ void main() {
   });
 
   test('Can identify platform architecture', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final structs = scope.typeDefs.where(
         (type) => type.name == 'Windows.Win32.UI.Shell.SHELLEXECUTEINFOW');
     check(structs.length).equals(2);
@@ -147,7 +147,7 @@ void main() {
 
   test('Can access nested type even if resolution scope token does not match',
       () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final struct = scope.findTypeDef('Windows.Win32.System.Kernel.SLIST_HEADER',
         preferredArchitecture: PreferredArchitecture.x64);
 
@@ -156,7 +156,7 @@ void main() {
   });
 
   test('Can distinguish global tokens', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final struct = scope.findTypeDef('Windows.Win32.System.Kernel.SLIST_HEADER',
         preferredArchitecture: PreferredArchitecture.x64);
 

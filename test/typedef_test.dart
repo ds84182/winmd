@@ -6,7 +6,7 @@ import 'package:winmd/winmd.dart';
 
 void main() {
   test('Find an unknown field', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typeDef = scope.findTypeDef('Windows.Win32.Media.Audio.Apis');
 
     check(typeDef).isNotNull();
@@ -16,7 +16,7 @@ void main() {
   });
 
   test('Test for unknown field', () {
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typeDef = scope.findTypeDef('Windows.Win32.Media.Audio.Apis');
 
     check(typeDef).isNotNull();
@@ -85,7 +85,7 @@ void main() {
 
   test('Distinguish Win32 structs, delegates, classes, enums, and interfaces',
       () {
-    final win32 = MetadataStore.getWin32Scope();
+    final win32 = await MetadataStore.getWin32Scope();
     final aStruct =
         win32.findTypeDef('Windows.Win32.Graphics.Gdi.MONITORINFOEXW')!;
     check(aStruct.isWindowsRuntime).isFalse();

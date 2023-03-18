@@ -37,7 +37,7 @@ void main() {
   test('Method properties 3', () {
     const methodName = 'DoDragDrop';
 
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typeDef = scope.findTypeDef('Windows.Win32.System.Ole.Apis');
     final method = typeDef!.findMethod(methodName)!;
 
@@ -68,7 +68,7 @@ void main() {
   test('Method properties 4', () {
     const methodName = 'GetAltMonthNames';
 
-    final scope = MetadataStore.getWin32Scope();
+    final scope = await MetadataStore.getWin32Scope();
     final typeDef = scope.findTypeDef('Windows.Win32.System.Ole.Apis');
     final method = typeDef!.findMethod(methodName)!;
 

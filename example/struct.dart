@@ -1,8 +1,8 @@
 import 'package:win32/win32.dart';
 import 'package:winmd/winmd.dart';
 
-void main() {
-  final scope = MetadataStore.getWin32Scope();
+void main() async {
+  final scope = await MetadataStore.getWin32Scope();
 
   // Find a namesapce
   final struct = scope
