@@ -8,8 +8,8 @@ import 'package:winmd/winmd.dart';
 
 const typeToGenerate = 'Windows.Win32.Networking.NetworkListManager.INetwork';
 
-void main(List<String> args) {
-  final scope = MetadataStore.getWin32Scope();
+Future<void> main(List<String> args) async {
+  final scope = await MetadataStore.getWin32Scope();
   final typedef = scope.findTypeDef(typeToGenerate)!;
 
   print('$typeToGenerate contains the following methods:');
